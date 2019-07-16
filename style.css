@@ -3,6 +3,7 @@
 body {
     height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 
@@ -10,6 +11,8 @@ body {
 }
 
 h1 {
+    margin: 0 0 20px;
+
     font-family: 'Lobster', cursive;
     font-size: 45px;
     text-align: center;
@@ -17,4 +20,15 @@ h1 {
 
     text-shadow: 1.5px 1.5px .5px #fff;
 
+    filter: drop-shadow(0 0 3px rgba(0,0,0,0.15));
 }
+
+h2 {
+    margin: 0;
+
+    font-family: 'Lobster', cursive;
+    font-size: 24px;
+    text-align: center;
+    color: #fff200;
+}
+
