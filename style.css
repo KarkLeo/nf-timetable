@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Lobster&display=swap');
 
 body {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -52,4 +52,17 @@ h2 {
 
 .grid__item.grid__itemNull {
     background-color: rgba(255,255,255, .3);
+}
+
+.grid__gladeName {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .125em;
+    font-size: 1.2rem;
+    color: #641e85;
+}
+
+.grid__timeCell {
+    font-weight: 700;
+    color: #fff200;
 }

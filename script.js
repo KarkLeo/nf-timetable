@@ -51,7 +51,7 @@ function gridCreated (text) {
 
         for (i = 0; i < (day.dayFinish - day.dayStart); i++) {
             let gridItem = document.createElement ( "div" );
-            gridItem.innerText = `${day.dayStart + i}.00`;
+            gridItem.innerText = `${day.dayStart + i}:s00`;
             gridItem.classList.add('grid__item', 'grid__timeCell');
             gridItem.style.gridColumn = `1 / 2`;
             gridItem.style.gridRow = `${activRow} / ${activRow + 1}`;
