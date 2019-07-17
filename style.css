@@ -63,3 +63,11 @@ h2 {
 .grid__timeCell {
     font-weight: 700;
 }
+
+.updateTime {
+    margin: 0 0 40px;
+
+    font-family: sans-serif;
+    text-align: center;
+    color: #fff;
+}
