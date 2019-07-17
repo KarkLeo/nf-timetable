@@ -56,13 +56,10 @@ h2 {
 
 .grid__gladeName {
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .125em;
-    font-size: 1.2rem;
+    font-size: 1.125rem;
     color: #641e85;
 }
 
 .grid__timeCell {
     font-weight: 700;
-    color: #fff200;
 }
