@@ -32,3 +32,24 @@ h2 {
     color: #fff200;
 }
 
+.grid {
+    display: grid;
+    grid-gap: 6px;
+    min-width: 1000px;
+    min-height: 1000px;
+    margin: 40px auto;
+}
+
+.grid__item {
+    padding: 2px 5px;
+
+    font-family: sans-serif;
+    text-align: center;
+
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.grid__item.grid__itemNull {
+    background-color: rgba(255,255,255, .3);
+}
