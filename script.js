@@ -14,32 +14,39 @@ readTextFile("data.json", gridCreated);
 function gridCreated (text) {
     var data = JSON.parse(text);
 
+    //Cell calculation
     var rowGrid = data.timeFrame.length;
     data.timeFrame.forEach (function (day) {
-        rowGrid += day.dayFinish - day.dayStart;
+        rowGrid += (day.dayFinish - day.dayStart) * 2;
     });
-    var colGrid = data.glades.length + 1;
+    var colGrid = data.places.length + 1;
 
+    //Create grid
     var grid = document.querySelector('.grid');
     grid.style.gridTemplateColumns = `repeat(${colGrid}, auto)`;
     grid.style.gridTemplateRows = `repeat(${rowGrid}, auto)`;
 
+    //Global grid state
     var gridItemsCount = 0
     var activRow = 1;
 
-    data.timeFrame.forEach ( function (day, item) {
+    let getTimeFormat = (time) => `${Math.floor(time) >= 10 ? Math.floor(time) : '0' + Math.floor(time)}:${Math.ceil(time) - time > 0 ? '30' : '00'}`;
+    let getDurationFormat = (time) => `${Math.floor(time)}:${Math.ceil(time) - time > 0 ? '30' : '00'}`;
+
+    data.timeFrame.forEach ( function (day) {
+
         let gridItem = document.createElement ( "div" );
-        gridItem.innerText = `День ${item + 1}`;
-        gridItem.classList.add('grid__item', 'grid__gladeName', 'grid__timeCell');
+        gridItem.innerText = day.dayName;
+        gridItem.classList.add('grid__item', 'grid__placeName', 'grid__timeCell');
         gridItem.style.gridColumn = `1 / 2`;
         gridItem.style.gridRow = `${activRow} / ${activRow + 1}`;
         grid.appendChild(gridItem);
         gridItemsCount++;
 
-        data.glades.forEach (function (title, item) {
+        data.places.forEach (function (title, item) {
             let gridItem = document.createElement ( "div" );
             gridItem.innerText = title;
-            gridItem.classList.add('grid__item', 'grid__gladeName');
+            gridItem.classList.add('grid__item', 'grid__placeName');
             gridItem.style.gridColumn = `${item + 2} / ${item + 3}`;
             gridItem.style.gridRow = `${activRow} / ${activRow + 1}`;
             grid.appendChild(gridItem);
@@ -48,9 +55,10 @@ function gridCreated (text) {
 
         activRow++;
 
-        for (i = 0; i < (day.dayFinish - day.dayStart); i++) {
+        for (i = 0; i < (day.dayFinish - day.dayStart); i += 0.5) {
             let gridItem = document.createElement ( "div" );
-            gridItem.innerText = `${day.dayStart + i}:00`;
+
+            gridItem.innerText = getTimeFormat(day.dayStart + i);
             gridItem.classList.add('grid__item', 'grid__timeCell');
             gridItem.style.gridColumn = `1 / 2`;
             gridItem.style.gridRow = `${activRow} / ${activRow + 1}`;
@@ -58,6 +66,51 @@ function gridCreated (text) {
             gridItemsCount++;
             activRow++;
         }
+    });
+
+    var getTimeStartIndex = function (day, timeStart) {
+        var rowIndex = day + 2;
+
+        for (i = 0; i < day; i++) rowIndex += (data.timeFrame[i].dayFinish - data.timeFrame[i].dayStart) * 2;
+        rowIndex += (timeStart - data.timeFrame[day].dayStart) * 2;
+
+        return rowIndex;
+    }
+
+    var getPlaceIndex = function (placeName) {
+        var placeIndex = 0;
+        data.places.forEach(function (place, i) {
+            placeIndex = placeName === place ? (i + 2) : placeIndex;
+        })
+        return placeIndex;
+    }
+
+    data.events.forEach(function (event) {
+        let gridItemEvent = document.createElement ( "div" );
+        gridItemEvent.innerHTML = `
+                <ul class="iconList">
+                    <li class="iconList__item">
+                        <svg class="iconList__icon">
+                            <use xlink:href="#timeStart"></use>
+                        </svg>
+                        ${getTimeFormat(event.timeStart)}
+                    </li>
+                    <li class="iconList__item">
+                        <svg class="iconList__icon">
+                            <use xlink:href="#duration"></use>
+                        </svg>
+                        ${getDurationFormat(event.duration)}
+                    </li>
+                </ul>
+                <h3>${event.title}</h3>
+                <p>${event.author}</p>
+                
+        `;
+        gridItemEvent.classList.add('grid__item', 'grid__eventCell');
+        gridItemEvent.style.gridColumn = `${getPlaceIndex(event.place)} / ${getPlaceIndex(event.place) + 1}`;
+        gridItemEvent.style.gridRow = `${getTimeStartIndex(event.day, event.timeStart)} / ${getTimeStartIndex(event.day, event.timeStart) + event.duration * 2}`;
+        grid.appendChild(gridItemEvent);
+        gridItemsCount += event.duration * 2;
     });
 
     for (i = 0; i < (rowGrid * colGrid - gridItemsCount); i++) {
