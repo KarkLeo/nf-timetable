@@ -1,8 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Lobster&display=swap');
 
 html {
     margin: 0;
     padding: 0;
+
+    font-family: sans-serif;
 }
 
 body {
@@ -20,11 +21,10 @@ body {
 h1 {
     margin: 0 0 20px;
 
-    font-family: 'Lobster', cursive;
     font-size: 45px;
     text-align: center;
     color: #fff200;
-
+    font-weight: 700;
     text-shadow: 1.5px 1.5px .5px #fff;
 
     filter: drop-shadow(0 0 3px rgba(0,0,0,0.15));
@@ -33,15 +33,14 @@ h1 {
 h2 {
     margin: 0;
 
-    font-family: 'Lobster', cursive;
     font-size: 24px;
     text-align: center;
     color: #fff200;
+    font-weight: 700;
 }
 
 .content {
     padding: 40px;
-    min-width: 1040px;
     height: auto;
     margin: 0;
     box-sizing: border-box;
@@ -53,7 +52,7 @@ h2 {
 .grid {
     display: grid;
     grid-gap: 6px;
-    min-width: 1000px;
+    width: 100%;
     min-height: 1000px;
     margin: 40px auto;
     padding: 0;
@@ -75,6 +74,14 @@ h2 {
 }
 
 .grid__placeName {
+    position: sticky;
+    top: 5px;
+    z-index: 10;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     font-weight: 700;
     font-size: 1.125rem;
     color: #641e85;
@@ -88,6 +95,12 @@ h2 {
     font-weight: 400;
 
     opacity: .5;
+}
+
+.grid__timeCell {
+    position: sticky;
+    left: 5px;
+    z-index: 5;
 }
 
 .grid__eventCell {
@@ -136,7 +149,7 @@ h2 {
 }
 
 .updateTime {
-    margin: 0 0 40px;
+    margin: 0 0 20px;
 
     font-family: sans-serif;
     text-align: center;
@@ -152,11 +165,10 @@ canvas {
     width: 400px;
     height: 60px;
 
-    font-family: 'Lobster', cursive;
     font-size: 30px;
     text-align: center;
     color: #641e85;
-
+    font-weight: 700;
     text-shadow: 1.5px 1.5px .5px #fff;
 
     background-color: #fff200;
@@ -164,4 +176,9 @@ canvas {
     border: none;
     border-radius: 15px;
     outline: none;
+    cursor: pointer;
+}
+
+.save_image:hover {
+    filter: drop-shadow(0 8px 3px rgba(0,0,0,0.25));
 }

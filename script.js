@@ -9,10 +9,14 @@ function readTextFile(file, callback) {
     }
     rawFile.send(null);
 }
-readTextFile("data.json", gridCreated);
+// readTextFile("data.json", gridCreated);
 
 function gridCreated (text) {
-    var data = JSON.parse(text);
+    if (typeof  text === "string" ) {
+        var data = JSON.parse(text);
+    } else if (typeof  text === "object" ) {
+        var data = text;
+    }
 
     //Cell calculation
     var rowGrid = data.timeFrame.length;
@@ -125,7 +129,6 @@ function gridCreated (text) {
             .then ( response => response.json () )
             .then ( function (data) {
                 var updateDate = new Date (data.updated_at);
-                // console.log(updateDate);
 
                 var dateYear = updateDate.getFullYear()
                 var dateMonth = (updateDate.getMonth() + 1).toString().length === 1 ? '0' + (updateDate.getMonth() + 1).toString() : (updateDate.getMonth() + 1).toString();
@@ -167,4 +170,20 @@ function gridCreated (text) {
         saveImage(image);
     }
 }
+
+(function () {
+    var app = "https://script.google.com/macros/s/AKfycbyuN6aArjojgmt_VC3S8aJZx281n234g-GwMaI6VA/exec",
+        xhr = new XMLHttpRequest();
+    xhr.open('GET', app);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
+
+        if (xhr.status == 200) {
+            try {
+                gridCreated (JSON.parse(xhr.responseText).result);
+            } catch(e) {}
+        }
+    }
+    xhr.send()
+})();
 
