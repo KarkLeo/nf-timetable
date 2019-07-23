@@ -1,11 +1,18 @@
 @import url('https://fonts.googleapis.com/css?family=Lobster&display=swap');
 
+html {
+    margin: 0;
+    padding: 0;
+}
+
 body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 0;
+    margin: 0;
 
     background-color: #641e85;
 }
@@ -32,12 +39,25 @@ h2 {
     color: #fff200;
 }
 
+.content {
+    padding: 40px;
+    min-width: 1040px;
+    height: auto;
+    margin: 0;
+    box-sizing: border-box;
+
+    background-color: #641e85;
+
+}
+
 .grid {
     display: grid;
     grid-gap: 6px;
     min-width: 1000px;
     min-height: 1000px;
     margin: 40px auto;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .grid__item {
@@ -69,7 +89,6 @@ h2 {
 
     opacity: .5;
 }
-
 
 .grid__eventCell {
     padding: 5px;
@@ -122,4 +141,27 @@ h2 {
     font-family: sans-serif;
     text-align: center;
     color: #fff;
+}
+
+canvas {
+     display: none;
+}
+
+.save_image {
+    margin: 0 auto 60px;
+    width: 400px;
+    height: 60px;
+
+    font-family: 'Lobster', cursive;
+    font-size: 30px;
+    text-align: center;
+    color: #641e85;
+
+    text-shadow: 1.5px 1.5px .5px #fff;
+
+    background-color: #fff200;
+    filter: drop-shadow(0 0 3px rgba(0,0,0,0.15));
+    border: none;
+    border-radius: 15px;
+    outline: none;
 }

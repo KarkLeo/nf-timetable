@@ -136,10 +136,35 @@ function gridCreated (text) {
 
                 document.querySelector('.updateTime__value').innerText = dateDay + '.' + dateMonth + '.' + dateYear + ' о ' + dateHours + ':' + dateMinutes;
 
+                window.scrollTo( 0, 0 );
+                html2canvas(document.querySelector(".content")).then(canvas => {
+                    document.body.appendChild(canvas)
+                });
             });
     }
     getData();
 
+    function getImage(canvas){
+        var imageData = canvas.toDataURL();
+        var image = new Image();
+        image.src = imageData;
+        return image;
+    }
 
+    function saveImage(image) {
+        var link = document.createElement("a");
+
+        link.setAttribute("href", image.src);
+        link.setAttribute("download", "Програма NametFest");
+        link.click();
+    }
+
+    var imageButton = document.querySelector(".save_image");
+    imageButton.onclick =  function (event) {
+
+        window.scrollTo( 0, 0 );
+        var image = getImage(document.querySelector("canvas"));
+        saveImage(image);
+    }
 }
 
