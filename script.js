@@ -188,8 +188,22 @@ function gridCreated (text) {
 // })();
 
 function gridCreatedFromGTable (dataArray) {
-    let rowGrid = dataArray.length;
-    let colGrid = dataArray[0].length;
+    let rowGrid = (function () {
+        let countRow = 0;
+        dataArray.forEach(function (cell) {
+            countRow = (cell.r + cell.h) > countRow ? (cell.r + cell.h) : countRow;
+        });
+        return --countRow;
+    })();
+    let colGrid = (function () {
+       let countColumn = 0;
+       dataArray.forEach(function (cell) {
+           countColumn = (cell.c + cell.w) > countColumn ? (cell.c + cell.w) : countColumn;
+       });
+       return --countColumn;
+    })();
+    console.log('row - ' + rowGrid);
+    console.log('max cell in row - ' + colGrid);
 
     //Create grid
     let grid = document.querySelector('.grid');
@@ -199,21 +213,16 @@ function gridCreatedFromGTable (dataArray) {
     //Global grid state
     let gridItemsCount = 0;
 
-    dataArray.forEach(function (rowArray, i) {
-
-        rowArray.forEach ( function (cellObj, j) {
-            if (cellObj.value !== '') {
-                let itemCell = document.createElement("div");
-                itemCell.innerHTML = `
-                    <p>${cellObj.value}</p>
-                `;
-                itemCell.classList.add('grid__item', 'grid__eventCell');
-                itemCell.style.gridColumn = `${j + 1} / ${j + 1 + cellObj.width}`;
-                itemCell.style.gridRow = `${i + 1} / ${i + 1 + cellObj.height}`;
-                grid.appendChild(itemCell);
-                gridItemsCount += 1 * cellObj.width * cellObj.height;
-            }
-        });
+    dataArray.forEach(function (cellObj) {
+        let itemCell = document.createElement("div");
+        itemCell.innerHTML = `
+            <p>${cellObj.v}</p>
+        `;
+        itemCell.classList.add('grid__item', 'grid__eventCell');
+        itemCell.style.gridColumn = `${cellObj.c} / ${cellObj.c + cellObj.w}`;
+        itemCell.style.gridRow = `${cellObj.r} / ${cellObj.r + cellObj.h}`;
+        grid.appendChild(itemCell);
+        gridItemsCount += cellObj.h * cellObj.w;
 
     });
 
@@ -223,6 +232,62 @@ function gridCreatedFromGTable (dataArray) {
         gridItem.classList.add('grid__item', 'grid__itemNull');
         grid.appendChild(gridItem);
     }
+
+    //Update date
+
+    var getData = function (  ) {
+        return fetch ( 'https://api.github.com/repos/KarkLeo/nf-timetable' )
+            .then ( response => response.json () )
+            .then ( function (data) {
+                var updateDate = new Date (data.updated_at);
+
+                var dateYear = updateDate.getFullYear()
+                var dateMonth = (updateDate.getMonth() + 1).toString().length === 1 ? '0' + (updateDate.getMonth() + 1).toString() : (updateDate.getMonth() + 1).toString();
+                var dateDay = updateDate.getDate().toString().length === 1 ? '0' + updateDate.getDate().toString() : updateDate.getDate().toString();
+
+                var dateHours = updateDate.getHours().toString().length === 1 ? '0' + updateDate.getHours().toString() : updateDate.getHours().toString();
+                var dateMinutes = updateDate.getMinutes().toString().length === 1 ? '0' + updateDate.getMinutes().toString() : updateDate.getMinutes().toString();
+
+                document.querySelector('.updateTime__value').innerText = dateDay + '.' + dateMonth + '.' + dateYear + ' о ' + dateHours + ':' + dateMinutes;
+
+                window.scrollTo( 0, 0 );
+                html2canvas(document.querySelector(".content")).then(canvas => {
+                    document.body.appendChild(canvas)
+                });
+            });
+    }
+    getData();
+
+    //Canvas images
+
+    function getImage(canvas){
+        var imageData = canvas.toDataURL();
+        var image = new Image();
+        image.src = imageData;
+        return image;
+    }
+
+    function saveImage(image) {
+        var link = document.createElement("a");
+
+        link.setAttribute("href", image.src);
+        link.setAttribute("download", "Програма NametFest");
+        link.click();
+    }
+
+    var imageButton = document.querySelector(".save_image");
+    imageButton.onclick =  function (event) {
+
+        window.scrollTo( 0, 0 );
+        var image = getImage(document.querySelector("canvas"));
+        saveImage(image);
+    }
+
+    document.querySelectorAll('.onload').forEach(function (elem) {
+        elem.classList.remove('onload');
+    })
+    document.querySelector('.preloader').classList.add('hide');
+
 }
 
 

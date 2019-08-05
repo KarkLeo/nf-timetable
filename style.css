@@ -40,13 +40,13 @@ h2 {
 }
 
 .content {
+    width: 100%;
     padding: 40px;
     height: auto;
     margin: 0 auto;
     box-sizing: border-box;
 
     background-color: #641e85;
-
 }
 
 .grid {
@@ -54,9 +54,11 @@ h2 {
     grid-gap: 6px;
     width: 100%;
     min-height: 1000px;
-    margin: 40px;
+    margin: 40px 0;
     padding: 0;
     box-sizing: border-box;
+
+    transition: all 150ms ease-in;
 }
 
 .grid__item {
@@ -154,6 +156,8 @@ h2 {
     font-family: sans-serif;
     text-align: center;
     color: #fff;
+
+    transition: all 150ms ease-in;
 }
 
 canvas {
@@ -177,8 +181,34 @@ canvas {
     border-radius: 15px;
     outline: none;
     cursor: pointer;
+
+    transition: all 150ms ease-in;
 }
 
 .save_image:hover {
     filter: drop-shadow(0 8px 3px rgba(0,0,0,0.25));
+}
+
+.onload {
+    opacity: 0;
+    filter: blur(12px);
+    pointer-events: none;
+}
+.preloader {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+
+    width: 100px;
+    height: 100px;
+
+    transform: translateY(-50%) translateX(-50%);
+    background-image: url("/preloader.gif");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: all 100ms ease-out;
+}
+.hide {
+    opacity: 0;
 }
