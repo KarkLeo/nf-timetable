@@ -42,7 +42,7 @@ h2 {
 .content {
     padding: 40px;
     height: auto;
-    margin: 0;
+    margin: 0 auto;
     box-sizing: border-box;
 
     background-color: #641e85;
@@ -54,7 +54,7 @@ h2 {
     grid-gap: 6px;
     width: 100%;
     min-height: 1000px;
-    margin: 40px auto;
+    margin: 40px;
     padding: 0;
     box-sizing: border-box;
 }

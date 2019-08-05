@@ -31,7 +31,7 @@ function gridCreated (text) {
     grid.style.gridTemplateRows = `repeat(${rowGrid}, auto)`;
 
     //Global grid state
-    var gridItemsCount = 0
+    var gridItemsCountgridItemsCount = 0
     var activRow = 1;
 
     let getTimeFormat = (time) => `${Math.floor(time) >= 10 ? Math.floor(time) : '0' + Math.floor(time)}:${Math.ceil(time) - time > 0 ? '30' : '00'}`;
@@ -171,8 +171,63 @@ function gridCreated (text) {
     }
 }
 
+// (function () {
+//     var app = "https://script.google.com/macros/s/AKfycbyuN6aArjojgmt_VC3S8aJZx281n234g-GwMaI6VA/exec",
+//         xhr = new XMLHttpRequest();
+//     xhr.open('GET', app);
+//     xhr.onreadystatechange = function() {
+//         if (xhr.readyState !== 4) return;
+//
+//         if (xhr.status == 200) {
+//             try {
+//                 gridCreated (JSON.parse(xhr.responseText).result);
+//             } catch(e) {}
+//         }
+//     }
+//     xhr.send()
+// })();
+
+function gridCreatedFromGTable (dataArray) {
+    let rowGrid = dataArray.length;
+    let colGrid = dataArray[0].length;
+
+    //Create grid
+    let grid = document.querySelector('.grid');
+    grid.style.gridTemplateColumns = `repeat(${colGrid}, auto)`;
+    grid.style.gridTemplateRows = `repeat(${rowGrid}, auto)`;
+
+    //Global grid state
+    let gridItemsCount = 0;
+
+    dataArray.forEach(function (rowArray, i) {
+
+        rowArray.forEach ( function (cellObj, j) {
+            if (cellObj.value !== '') {
+                let itemCell = document.createElement("div");
+                itemCell.innerHTML = `
+                    <p>${cellObj.value}</p>
+                `;
+                itemCell.classList.add('grid__item', 'grid__eventCell');
+                itemCell.style.gridColumn = `${j + 1} / ${j + 1 + cellObj.width}`;
+                itemCell.style.gridRow = `${i + 1} / ${i + 1 + cellObj.height}`;
+                grid.appendChild(itemCell);
+                gridItemsCount += 1 * cellObj.width * cellObj.height;
+            }
+        });
+
+    });
+
+    for (i = 0; i < (rowGrid * colGrid - gridItemsCount); i++) {
+        let gridItem = document.createElement ( "div" );
+        gridItem.innerText = ``;
+        gridItem.classList.add('grid__item', 'grid__itemNull');
+        grid.appendChild(gridItem);
+    }
+}
+
+
 (function () {
-    var app = "https://script.google.com/macros/s/AKfycbyuN6aArjojgmt_VC3S8aJZx281n234g-GwMaI6VA/exec",
+    var app = "https://script.google.com/macros/s/AKfycbwZNPY5JIkleEJbtOBEOGwHOfCtx6nTPmbfbEyqzqOX9uhEVQ/exec",
         xhr = new XMLHttpRequest();
     xhr.open('GET', app);
     xhr.onreadystatechange = function() {
@@ -180,10 +235,9 @@ function gridCreated (text) {
 
         if (xhr.status == 200) {
             try {
-                gridCreated (JSON.parse(xhr.responseText).result);
+                gridCreatedFromGTable (JSON.parse(xhr.responseText).result);
             } catch(e) {}
         }
     }
     xhr.send()
 })();
-
