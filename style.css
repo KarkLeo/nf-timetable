@@ -41,7 +41,8 @@ h2 {
 
 .content {
     width: 100%;
-    padding: 40px;
+    padding: 20px;
+    min-width: 1640px;
     height: auto;
     margin: 0 auto;
     box-sizing: border-box;
@@ -121,19 +122,22 @@ h2 {
 .grid__title p {
     color: #fff;
     font-weight: 700;
-    font-size: 1.125rem;
     text-align: center;
     font-size: 18px;
 }
 
 .grid__eventCell {
-    padding: 25px 5px;
+    padding: 25px 8px;
     box-sizing: border-box;
     justify-content: flex-start;
 }
 .grid__eventCell p {
+    margin: 5px 0;
+
     text-align: left;
     color: #333;
+    font-weight: 700;
+    font-size: 16px;
 }
 
 p {
