@@ -1,14 +1,14 @@
-function readTextFile(file, callback) {
-    var rawFile = new XMLHttpRequest();
-    rawFile.overrideMimeType("application/json");
-    rawFile.open("GET", file, true);
-    rawFile.onreadystatechange = function() {
-        if (rawFile.readyState === 4 && rawFile.status == "200") {
-            callback(rawFile.responseText);
-        }
-    }
-    rawFile.send(null);
-}
+// function readTextFile(file, callback) {
+//     var rawFile = new XMLHttpRequest();
+//     rawFile.overrideMimeType("application/json");
+//     rawFile.open("GET", file, true);
+//     rawFile.onreadystatechange = function() {
+//         if (rawFile.readyState === 4 && rawFile.status == "200") {
+//             callback(rawFile.responseText);
+//         }
+//     }
+//     rawFile.send(null);
+// }
 // readTextFile("data.json", gridCreated);
 
 function gridCreated (text) {
@@ -187,6 +187,16 @@ function gridCreated (text) {
 //     xhr.send()
 // })();
 
+
+let getHoursToFormat = (dateObj) => `${dateObj.getHours().toString().length === 1 ? '0' + dateObj.getHours().toString() : dateObj.getHours().toString()}`;
+let getMinutsToDubleFormat = (dateObj) => `${dateObj.getMinutes() < 30 ? '00' : '30'}`;
+let getDurationFormat = (cellHeight) => `${Math.floor(cellHeight / 2)}:${Math.ceil(cellHeight / 2) - cellHeight / 2 > 0 ? '30' : '00'}`;
+
+function getNormalTimeFormat (timeTostring) {
+    let useDate = new Date (timeTostring);
+    return getHoursToFormat (useDate) + ':' + getMinutsToDubleFormat (useDate);
+} 
+
 function gridCreatedFromGTable (dataArray) {
     let rowGrid = (function () {
         let countRow = 0;
@@ -202,8 +212,6 @@ function gridCreatedFromGTable (dataArray) {
        });
        return --countColumn;
     })();
-    console.log('row - ' + rowGrid);
-    console.log('max cell in row - ' + colGrid);
 
     //Create grid
     let grid = document.querySelector('.grid');
@@ -213,14 +221,68 @@ function gridCreatedFromGTable (dataArray) {
     //Global grid state
     let gridItemsCount = 0;
 
+    //Current time
+    let currentTime = 0;
+
+    //Reg masks 
+    let timeFormat = new RegExp(/\d\d\d\-\d\d\-\d\dT\d\d\:\d\d\:\d\d.\d\d\dZ/);
+    let authorFormat = new RegExp(/\(.+\)/);
+    let locationFormat = new RegExp(/\{.+\}/);
+    let timeTextFormat = new RegExp(/\[.+\]/);
+
     dataArray.forEach(function (cellObj) {
-        let itemCell = document.createElement("div");
-        itemCell.innerHTML = `
-            <p>${cellObj.v}</p>
+        let itemCell = document.createElement("div");        
+        let cellContent = `            
+            <p>${timeFormat.test(cellObj.v) ? getNormalTimeFormat(cellObj.v) : cellObj.v}</p>
         `;
-        itemCell.classList.add('grid__item', 'grid__eventCell');
+        itemCell.classList.add('grid__item');
+        if (cellObj.r === 1) itemCell.classList.add('grid__placeName'); 
+        if (timeFormat.test(cellObj.v)) {
+            itemCell.classList.add('grid__timeCell'); 
+            currentTime = cellObj.v;
+        }
+        if (cellObj.w === colGrid) itemCell.classList.add('grid__title'); 
+
+
+        if (cellObj.r !== 1 && !(timeFormat.test(cellObj.v)) && cellObj.w !== colGrid) {
+
+            let author = cellObj.v.match(authorFormat) !== null ? cellObj.v.match(authorFormat)[0].slice(1, -1) : '';
+            let location = cellObj.v.match(locationFormat) !== null ? cellObj.v.match(locationFormat)[0].slice(1, -1) : '';
+            let timeText = cellObj.v.match(timeTextFormat) !== null ? cellObj.v.match(timeTextFormat)[0].slice(1, -1) : '';
+
+            let value = authorFormat.test(cellObj.v) ? cellObj.v.replace(authorFormat, '') : cellObj.v;
+            value = locationFormat.test(value) ? value.replace(locationFormat, '') : value;
+            value = timeTextFormat.test(value) ? value.replace(timeTextFormat, '') : value;
+            value = value.replace('\\br', '<br/>');
+            console.log(value);
+            
+            cellContent = `
+                <ul class="iconList">
+                    <li class="iconList__item">
+                        <svg class="iconList__icon">
+                            <use xlink:href="#timeStart"></use>
+                        </svg>
+                        ${getNormalTimeFormat(currentTime)}
+                    </li>
+                    <li class="iconList__item">
+                        <svg class="iconList__icon">
+                            <use xlink:href="#duration"></use>
+                        </svg>
+                        ${timeText !== '' ? timeText : getDurationFormat(cellObj.h)}
+                    </li>
+                </ul>
+                <p>${value}</p>
+            `
+            if (author != '') cellContent += `<span class="author">${author}</span>`;
+            if (location != '') cellContent += `<span class="location">${location}</span>`;
+
+            itemCell.classList.add('grid__eventCell'); 
+        } 
+
         itemCell.style.gridColumn = `${cellObj.c} / ${cellObj.c + cellObj.w}`;
         itemCell.style.gridRow = `${cellObj.r} / ${cellObj.r + cellObj.h}`;
+
+        itemCell.innerHTML = cellContent
         grid.appendChild(itemCell);
         gridItemsCount += cellObj.h * cellObj.w;
 
@@ -287,22 +349,41 @@ function gridCreatedFromGTable (dataArray) {
         elem.classList.remove('onload');
     })
     document.querySelector('.preloader').classList.add('hide');
-
 }
 
+function getJosnData (jsonData) {
+    gridCreatedFromGTable (JSON.parse(jsonData).result);
+}
 
-(function () {
-    var app = "https://script.google.com/macros/s/AKfycbwZNPY5JIkleEJbtOBEOGwHOfCtx6nTPmbfbEyqzqOX9uhEVQ/exec",
-        xhr = new XMLHttpRequest();
-    xhr.open('GET', app);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState !== 4) return;
-
-        if (xhr.status == 200) {
-            try {
-                gridCreatedFromGTable (JSON.parse(xhr.responseText).result);
-            } catch(e) {}
+// JSON
+// -----------------------
+function readTextFile(file, callback) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.overrideMimeType("application/json");
+    rawFile.open("GET", file, true);
+    rawFile.onreadystatechange = function() {
+        if (rawFile.readyState === 4 && rawFile.status == "200") {
+            callback(rawFile.responseText);
         }
     }
-    xhr.send()
-})();
+    rawFile.send(null);
+}
+readTextFile("table.json", getJosnData);
+
+// Goole sheets
+// -----------------------
+// (function () {
+//     var app = "https://script.google.com/macros/s/AKfycbwZNPY5JIkleEJbtOBEOGwHOfCtx6nTPmbfbEyqzqOX9uhEVQ/exec",
+//         xhr = new XMLHttpRequest();
+//     xhr.open('GET', app);
+//     xhr.onreadystatechange = function() {
+//         if (xhr.readyState !== 4) return;
+
+//         if (xhr.status == 200) {
+//             try {
+//                 gridCreatedFromGTable (JSON.parse(xhr.responseText).result);
+//             } catch(e) {}
+//         }
+//     }
+//     xhr.send()
+// })();

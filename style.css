@@ -53,6 +53,7 @@ h2 {
     display: grid;
     grid-gap: 6px;
     width: 100%;
+    min-width: 1600px;
     margin: 40px 0;
     padding: 0;
     box-sizing: border-box;
@@ -61,6 +62,11 @@ h2 {
 }
 
 .grid__item {
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 1px 5px;
 
     font-family: sans-serif;
@@ -82,69 +88,106 @@ h2 {
     display: flex;
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;
 
+    border: 2px solid #641e85;
+}
+.grid__item.grid__placeName p {
+    color: #641e85;
     font-weight: 700;
     font-size: 1.125rem;
-    color: #641e85;
-}
-
-.grid__timeCell:not(.grid__placeName) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-weight: 400;
-
-    opacity: .5;
+    text-align: center;
 }
 
 .grid__timeCell {
     position: sticky;
     left: 5px;
-    z-index: 5;
+    z-index: 15;
+
+    box-sizing: border-box;
+
+    border: 2px solid #641e85;
+}
+.grid__timeCell p {
+    color: #641e85;
+    font-weight: 700;
+}
+
+.grid__title {
+    padding: 15px 0;
+
+    background-image: linear-gradient(175deg, rgba(242, 255, 0, 1) 0%, rgba(238, 119, 26, 1) 100%);
+}
+.grid__title p {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.125rem;
+    text-align: center;
+    font-size: 18px;
 }
 
 .grid__eventCell {
-    padding: 5px;
+    padding: 25px 5px;
     box-sizing: border-box;
+    justify-content: flex-start;
 }
-.grid__eventCell h3 {
-    margin: 0 0 5px;
-
+.grid__eventCell p {
     text-align: left;
-    font-size: 18px;
     color: #333;
 }
 
-.grid__eventCell p {
+p {
     margin: 0;
 
-    text-align: right;
+    text-align: left;
     font-size: 16px;
     color: #333;
 }
+.grid__eventCell .author {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+
+    font-size: 12px;
+    font-weight: 700;
+    color: #666;
+}
+.grid__eventCell .location {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+
+    font-size: 12px;
+    font-weight: 700;
+    color: #666;
+}
 
 .iconList {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+
     display: flex;
     align-items: center;
-    margin: 0 0 10px;
+    margin: 0;
     padding: 0;
 }
 .iconList__item {
     display: flex;
     align-items: center;
-    margin: 0 20px 0 0;
+    margin: 0 14px 0 0;
 
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
     color: #666;
 }
 
 .iconList__icon {
     display: block;
-    width: 15px;
-    height: 15px;
-    margin: 0 7px 0 0;
+    width: 14px;
+    height: 14px;
+    margin: 0 4px 0 0;
+    flex-grow: 0;
 
     fill: #666;
 }
